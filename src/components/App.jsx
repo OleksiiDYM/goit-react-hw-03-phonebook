@@ -22,9 +22,18 @@ export class App extends Component {
       localStorage.setItem('contacts', contacts);
   }
 
-  addContact = contact => {
+  addContact = data => {
+    if (
+      this.state.contacts.find(
+        contact =>
+          contact.name.toLowerCase() === data.name.toLowerCase() ||
+          contact.number === data.number
+      )
+    ) {
+      return alert(`${data.name} or ${data.number} is already exist`);
+    }
     this.setState(prev => ({
-      contacts: [...prev.contacts, { ...contact, id: nanoid() }],
+      contacts: [...prev.contacts, { ...data, id: nanoid() }],
     }));
   };
 
@@ -38,15 +47,13 @@ export class App extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  getFilterNormalize = () => this.state.filter.toLowerCase();
-
   getFilteredContacts = () =>
     this.state.contacts.filter(contact =>
-      contact.name.toLowerCase().includes(this.getFilterNormalize())
+      contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
     );
 
   render() {
-    const { contacts, filter } = this.state;
+    const { filter } = this.state;
 
     return (
       <div
@@ -55,11 +62,7 @@ export class App extends Component {
         }}
       >
         <h1>Phonebook</h1>
-        <ContactForm
-          contacts={contacts}
-          onSubmit={this.addContact}
-          handleChange={this.handleChange}
-        />
+        <ContactForm onSubmit={this.addContact} />
         <h2
           style={{
             fontSize: 28,
@@ -69,7 +72,6 @@ export class App extends Component {
         </h2>
         <Filter filter={filter} handleChange={this.handleChange} />
         <ContactList
-          contacts={contacts}
           filteredContacts={this.getFilteredContacts()}
           removeContact={this.removeContact}
         />

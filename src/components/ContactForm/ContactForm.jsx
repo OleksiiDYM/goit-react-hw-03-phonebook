@@ -20,17 +20,13 @@ class ContactForm extends Component {
   onAddToContactSubmit = e => {
     e.preventDefault();
 
-    if (this.props.contacts.some(contact => contact.name === this.state.name))
-      this.alertmessage(this.state.name);
-    else this.props.onSubmit(this.state);
+    this.props.onSubmit(this.state);
 
     this.setState({
       name: '',
       number: '',
     });
   };
-
-  alertmessage = name => alert(`${this.state.name} is already in contacts`);
 
   render() {
     return (
@@ -64,9 +60,7 @@ class ContactForm extends Component {
 }
 
 ContactForm.propTypes = {
-  handleChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  contacts: PropTypes.array.isRequired,
 };
 
 export default ContactForm;
